@@ -18,9 +18,44 @@ module.exports = smp.wrap({
   },
 
   mode: 'development',
+	
+	// splitchunks(代码分片)默认提取条件
+	// 1. 提取后chunk可被共享或者来自node_modules目录, 理解为多次引用或处于node_modules模块更倾向于通用模块适合提取
+	// 2. 提取后Js chunk大于30kb, css chunk大于50kb, 如果提取资源太小带来的优化效果也一般
+	// 3. 按需加载过程中, 并行的请求资源最大值小于等于5, 按需加载指动态插入js标签加载的脚本, 因不希望加载过多资源, so提取规则在并行请求不多生效
+	// 4. 首次加载时, 并行请求资源数最大值小于等于3
+	
+	optimization: {
+		splitchunks: {
+			// async: 默认只提取异步chunk, initial: 针对入口chunk生效, all: 皆可
+			chunks: 'async',
+			minSize: {
+				javascript: 30000,
+				style: 50000,
+			},
+			maxSize: 0,
+			minChunks: 1,
+			maxAsyncRequests: 5,
+			minInitialRequests: 3,
+			automaticNameDelimiter: '~',
+			// 根据cacheGroups和作用范围自动生成chunk命名, 并automaticNameDelimiter分隔
+			name: true,
+			cacheGroups: {
+				vendor: {
+					test: /[\\/]node_modules[\\/]/,
+					priority: -10,
+				},
+				default: {
+					minchunks: 2,
+					priority: -20,
+					reuseExsitingChunk: true
+				},
+			},
+		},
+	},
 
   plugins: [
-
+		
   	new HtmlWebpackPlugin({
   		template: './template.html'
   	}),
@@ -57,6 +92,14 @@ module.exports = smp.wrap({
 		3. 动态链接库思想 & DllPlugin(webpack4后已废弃)
 		4. 死代码检测 & tree-shaking
   */
+	
+	
+	
+	/*
+		资源异步加载: import加载的模块及其依赖会被异步加载并返回Promise对象, 如果js资源体积很大可在初次渲染并不需要使用时你以异步加载
+		eg: import('.bar.js').then(({ add }) => { console.log(add(1,2)) })
+	*/
+
 
   module: {
 
