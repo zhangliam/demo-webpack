@@ -15,8 +15,10 @@ module.exports = smp.wrap({
   output: {
     filename: 'main@[chunkhash].js',
     // path: path.resolve(__dirname, 'dist'),
+		// chunkFilename: '[name].js'
   },
 
+	dev: 'source-map',
   mode: 'development',
 	
 	// splitchunks(代码分片)默认提取条件
@@ -96,7 +98,7 @@ module.exports = smp.wrap({
 	
 	
 	/*
-		资源异步加载: import加载的模块及其依赖会被异步加载并返回Promise对象, 如果js资源体积很大可在初次渲染并不需要使用时你以异步加载
+		资源异步加载: import加载的模块及其依赖会被异步加载并返回Promise对象, 如果js资源体积很大可在初次渲染并不需要使用时可以异步加载
 		eg: import('.bar.js').then(({ add }) => { console.log(add(1,2)) })
 	*/
 
