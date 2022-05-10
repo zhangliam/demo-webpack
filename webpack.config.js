@@ -12,6 +12,11 @@ module.exports = smp.wrap({
 
   entry: './src/index.js',
 
+  // 使用长期缓存 => 文件名输出
+  // [hash] 替换：可以用于在文件名中包含一个构建相关(build-specific)的 hash；
+  // [chunkhash] 替换：在文件名中包含一个 chunk 相关(chunk-specific)的哈希，比[hash]替换更好；
+  // [contenthash] 替换：会根据资源的内容添加一个唯一的 hash，当资源内容不变时，[contenthash] 就不会变。
+  
   output: {
     filename: 'main@[chunkhash].js',
     // path: path.resolve(__dirname, 'dist'),
@@ -89,7 +94,7 @@ module.exports = smp.wrap({
 
   /*
 		打包优化(宏观无非两种: 增加资源、 缩小范围):
-		1. 多线程打包 - HappyPack(老版本) / thread-load(多进程worker编译)
+		1. 多进程打包 - HappyPack(老版本) / thread-load(多进程worker编译)
 		2. 缩小打包作用域 (include/exclude, noParse, IgnorePlugin)
 		3. 动态链接库思想 & DllPlugin(webpack4后已废弃)
 		4. 死代码检测 & tree-shaking
